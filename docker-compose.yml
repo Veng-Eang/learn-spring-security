@@ -1,0 +1,15 @@
+services:
+  my-sql-db:
+    image: mysql:5.7
+    container_name: springsecurity-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: securityDb
+      MYSQL_USER: vengeang
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+volumes:
+  mysql:
