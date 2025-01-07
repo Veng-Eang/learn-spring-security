@@ -11,8 +11,13 @@ import org.springframework.security.config.annotation.web.configurers.HttpBasicC
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -33,9 +38,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService users() {
-        UserDetails user = User.withUsername("user").password("{noop}password").authorities("read").build();
-        UserDetails admin = User.withUsername("admin").password("{noop}password").authorities("admin").build();
-        return new InMemoryUserDetailsManager(user, admin);
+    UserDetailsService users(DataSource dataSource) {
+        return new JdbcUserDetailsManager(dataSource);
     }
+
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+
 }
