@@ -22,7 +22,7 @@ public class ProdSecurityConfig {
                 .requiresChannel(rcc->rcc.anyRequest().requiresSecure())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) ->requests
-                        .requestMatchers("/account","/balance","/loans","/cards").authenticated()
+                        .requestMatchers("/myAccount","/myBalance","/myLoans","/myCards","/user").authenticated()
                         .requestMatchers("/notices","/contact","/error","/register","/invalidSession","/favicon.ico").permitAll()
         );
         http.formLogin(withDefaults());

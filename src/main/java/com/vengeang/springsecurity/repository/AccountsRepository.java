@@ -1,6 +1,6 @@
-package com.eazybytes.repository;
+package com.vengeang.springsecurity.repository;
 
-import com.eazybytes.model.Accounts;
+import com.vengeang.springsecurity.model.Accounts;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
