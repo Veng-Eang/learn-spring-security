@@ -17,11 +17,11 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         String message = (accessDeniedException != null && accessDeniedException.getMessage() != null) ? accessDeniedException.getMessage() : "Authorization failed";
         String path = request.getRequestURI();
         response.setHeader("Spirng Security Error", "Authorization failed");
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType("application/json;charset=UTF-8");
         String jsonResponse = String.format(
                 "{\"timestamp\":\"%s\",\"status\":\"%d\",\"error\":\"%s\",\"message\":\"%s\",\"path\":\"%s\"}",
-                timestamp,HttpStatus.UNAUTHORIZED.value(),HttpStatus.UNAUTHORIZED.getReasonPhrase(),message,path
+                timestamp,HttpStatus.FORBIDDEN.value(),HttpStatus.FORBIDDEN.getReasonPhrase(),message,path
         );
         response.getWriter().write(jsonResponse);
     }

@@ -4,6 +4,7 @@ import com.vengeang.springsecurity.model.Customer;
 import com.vengeang.springsecurity.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Customer customer = customerRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: "+username));
-        return new User(customer.getEmail(), customer.getPwd(), List.of(customer::getRole));
+        List<SimpleGrantedAuthority> authorities = customer.getAuthorities().stream().map(authz->new SimpleGrantedAuthority(authz.getName())).toList();
+        return new User(customer.getEmail(), customer.getPwd(), authorities);
     }
 }
