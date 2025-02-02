@@ -2,7 +2,11 @@ package com.vengeang.springsecurity.config;
 
 import com.vengeang.springsecurity.exception.CustomAccessDeniedHandler;
 import com.vengeang.springsecurity.exception.CustomAuthenticationEntryPoint;
+import com.vengeang.springsecurity.filter.AuthoritiesLoggingAfterFilter;
+import com.vengeang.springsecurity.filter.AuthoritiesLoggingAtFilter;
 import com.vengeang.springsecurity.filter.CsrfCookieFilter;
+import com.vengeang.springsecurity.filter.RequestValidationFilter;
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -60,6 +64,9 @@ public class SecurityConfig {
                         .ignoringRequestMatchers("/contact","/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new RequestValidationFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+                .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) ->requests
                         .requestMatchers("/myAccount").hasRole("USER")
                         .requestMatchers("/myBalance").hasAnyRole("USER","ADMIN")
