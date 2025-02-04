@@ -5,6 +5,8 @@ import com.vengeang.springsecurity.exception.CustomAuthenticationEntryPoint;
 import com.vengeang.springsecurity.filter.AuthoritiesLoggingAfterFilter;
 import com.vengeang.springsecurity.filter.AuthoritiesLoggingAtFilter;
 import com.vengeang.springsecurity.filter.CsrfCookieFilter;
+import com.vengeang.springsecurity.filter.JWTTokenGeneratorFilter;
+import com.vengeang.springsecurity.filter.JWTTokenValidatorFilter;
 import com.vengeang.springsecurity.filter.RequestValidationFilter;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +36,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import javax.sql.DataSource;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -46,15 +50,15 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
-        http
-                .securityContext(httpSecuritySecurityContextConfigurer -> httpSecuritySecurityContextConfigurer.requireExplicitSave(false))
-                .sessionManagement(smc->smc.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+        		http
+        		.sessionManagement(smc->smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(corsConfig->corsConfig.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
                     config.setAllowedMethods(Collections.singletonList("*"));
                     config.setAllowCredentials(true);
                     config.setAllowedHeaders(Collections.singletonList("*"));
+                    config.setExposedHeaders(Arrays.asList("Authorization"));
                     config.setMaxAge( 3600L);
                     return config;
                 }))
@@ -67,6 +71,8 @@ public class SecurityConfig {
                 .addFilterBefore(new RequestValidationFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
                 .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) ->requests
                         .requestMatchers("/myAccount").hasRole("USER")
                         .requestMatchers("/myBalance").hasAnyRole("USER","ADMIN")
