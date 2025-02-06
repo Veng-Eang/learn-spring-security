@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
@@ -65,7 +67,7 @@ public class SecurityConfig {
                 
 //                .sessionManagement(smc->smc.invalidSessionUrl("/invalidSession").maximumSessions(1))
                 .csrf(csrfConfig->csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-                        .ignoringRequestMatchers("/contact","/register")
+                        .ignoringRequestMatchers("/contact","/register","/apiLogin")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new RequestValidationFilter(), BasicAuthenticationFilter.class)
@@ -79,7 +81,7 @@ public class SecurityConfig {
                         .requestMatchers("/myLoans").hasRole("USER")
                         .requestMatchers("/myCards").hasRole("USER")
                         .requestMatchers("/user").authenticated()
-                        .requestMatchers("/notices","/contact","/error","/register","/favicon.ico","/invalidSession").permitAll()
+                        .requestMatchers("/notices","/contact","/error","/register","/favicon.ico","/invalidSession","apiLogin").permitAll()
         );
         http.exceptionHandling(ehc->ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         http.httpBasic(hbc->hbc.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
@@ -95,6 +97,14 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+    
+    @Bean
+    AuthenticationManager authenticationManager(UserDetailsService userDetailsService,PasswordEncoder passwordEncoder){
+    	CustomAuthenticationProvider customAuthenticationProvider = new CustomAuthenticationProvider(userDetailsService,passwordEncoder);
+    	ProviderManager providerManager = new ProviderManager(customAuthenticationProvider);
+    	providerManager.setEraseCredentialsAfterAuthentication(false);
+    	return providerManager;
     }
 
 
