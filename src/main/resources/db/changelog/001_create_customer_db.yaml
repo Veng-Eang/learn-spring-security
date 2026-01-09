@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      author: "oengvengeang@gmail.com"
+      id: "001_create_customer_db"
+      changes:
+        - createTable:
+            tableName: "customer"
+            columns:
+              - column:
+                  name: "customer_id"
+                  type: SERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: "name"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "email"
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "mobile_number"
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "pwd"
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "role"
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "create_dt"
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - loadData:
+            file: db/data/customer.csv
+            tableName: "customer"

@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      author: "oengvengeang@gmail.com"
+      id: "002_create_notice_detail_db"
+      changes:
+        - createTable:
+            tableName: "notice_details"
+            columns:
+              - column:
+                  name: "notice_id"
+                  type: SERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: "notice_summary"
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "notice_details"
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "notic_beg_dt"
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: "notic_end_dt"
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: "create_dt"
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: "update_dt"
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP

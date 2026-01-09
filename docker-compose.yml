@@ -1,15 +1,35 @@
 services:
-  my-sql-db:
-    image: mysql:5.7
-    container_name: springsecurity-mysql
+  securityDB:
+    container_name: securityDB
+    image: postgres
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: securityDb
-      MYSQL_USER: vengeang
-      MYSQL_PASSWORD: password
-    ports:
-      - "3306:3306"
+      POSTGRES_USER: vengeang
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+      TZ: Asia/Phnom_Penh
+    hostname: postgres
     volumes:
-      - mysql:/var/lib/mysql
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+  pgadmin:
+    container_name: pgadmin-securityDB
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: oengvengeang@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - postgres
 volumes:
-  mysql:
+  postgres:
+  pgadmin:
+networks:
+  postgres:
+    driver: bridge

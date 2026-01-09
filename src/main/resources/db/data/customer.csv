@@ -1,0 +1,3 @@
+name,email,mobile_number,pwd,role
+Happy,happy@example.com,5334122365,{bcrypt}$2a$12$88.f6upbBvy0okEa7OfHFuorV29qeK.sVbB9VQ6J6dWM1bW6Qef8m,admin
+Vengeang,vengeang@example.com,5334122365,{bcrypt}$2a$12$88.f6upbBvy0okEa7OfHFuorV29qeK.sVbB9VQ6J6dWM1bW6Qef8m,admin
